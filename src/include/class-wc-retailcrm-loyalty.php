@@ -130,7 +130,7 @@ if (!class_exists('WC_Retailcrm_Loyalty')) :
             }
         }
 
-        public function activateLoyaltyCustomer(int $loyaltyId): array
+        public function activateLoyaltyCustomer(int $loyaltyId)
         {
             try {
                 $response = $this->apiClient->activateLoyaltyAccount($loyaltyId);
@@ -143,27 +143,11 @@ if (!class_exists('WC_Retailcrm_Loyalty')) :
                     );
                 }
 
-                $checkId = null;
-
-                if (
-                    $response->isSuccessful()
-                    && $response->offsetExists('verification')
-                    && isset($response['verification']['checkId'])
-                ) {
-                    $checkId = (string) $response['verification']['checkId'];
-                }
-
-                return [
-                    'isSuccessful' => $response->isSuccessful(),
-                    'checkId' => $checkId
-                ];
+                return $response;
             } catch (Throwable $exception) {
                 WC_Retailcrm_Logger::exception(__METHOD__, $exception);
 
-                return [
-                    'isSuccessful' => false,
-                    'checkId' => null
-                ];
+                return false;
             }
         }
 

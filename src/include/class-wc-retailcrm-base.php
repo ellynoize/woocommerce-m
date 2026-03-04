@@ -1000,8 +1000,14 @@ if (!class_exists('WC_Retailcrm_Base')) {
 
             if ($loyaltyId) {
                 $response = $this->loyalty->activateLoyaltyCustomer($loyaltyId);
-                $isSuccessful = $response['isSuccessful'] ?? false;
-                $checkId = $response['checkId'] ?? null;
+
+                if (!empty($response) && $response->isSuccessful()) {
+                    $isSuccessful = true;
+
+                    if ($response->offsetExists('verification') && isset($response['verification']['checkId'])) {
+                        $checkId = (string) $response['verification']['checkId'];
+                    }
+                }
             }
 
             if (!$isSuccessful) {
