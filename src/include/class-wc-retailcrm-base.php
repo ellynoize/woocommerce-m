@@ -1005,7 +1005,7 @@ if (!class_exists('WC_Retailcrm_Base')) {
                     $isSuccessful = true;
 
                     if ($response->offsetExists('verification') && isset($response['verification']['checkId'])) {
-                        $checkId = (string) $response['verification']['checkId'];
+                        $checkId = $response['verification']['checkId'];
                     }
                 }
             }
@@ -1017,7 +1017,7 @@ if (!class_exists('WC_Retailcrm_Base')) {
                 );
                 echo wp_json_encode(['error' => esc_html__('Error when activating the loyalty program. Try again later', 'woo-retailcrm')]);
             } else {
-                if (!empty($checkId)) {
+                if (null !== $checkId && '' !== $checkId) {
                     echo wp_json_encode([
                         'isSuccessful' => true,
                         'needSmsVerification' => true,
@@ -1042,7 +1042,7 @@ if (!class_exists('WC_Retailcrm_Base')) {
             $checkId = filter_input(INPUT_POST, 'checkId', FILTER_SANITIZE_STRING);
             $isSuccessful = false;
 
-            if (!empty($code) && !empty($checkId)) {
+            if (null !== $code && null !== $checkId) {
                 $isSuccessful = $this->loyalty->confirmSmsVerification($code, $checkId);
             }
 
