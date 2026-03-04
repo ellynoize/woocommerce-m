@@ -134,6 +134,7 @@ if (!class_exists('WC_Retailcrm_Base')) {
             if (isLoyaltyActivate($this->settings)) {
                 add_action('wp_ajax_retailcrm_register_customer_loyalty', [$this, 'register_customer_loyalty']);
                 add_action('wp_ajax_retailcrm_activate_customer_loyalty', [$this, 'activate_customer_loyalty']);
+                add_action('wp_ajax_retailcrm_confirm_sms_customer_loyalty', [$this, 'confirm_sms_customer_loyalty']);
                 add_action('init', [$this, 'add_loyalty_endpoint'], 11, 1);
                 add_action('woocommerce_account_menu_items', [$this, 'add_loyalty_item'], 11, 1);
                 add_action('woocommerce_account_loyalty_endpoint', [$this, 'show_loyalty'], 11, 1);
@@ -1019,6 +1020,43 @@ if (!class_exists('WC_Retailcrm_Base')) {
                 } else {
                     echo wp_json_encode(['isSuccessful' => true]);
                 }
+            }
+
+            wp_die();
+        }
+
+        public function confirm_sms_customer_loyalty()
+        {
+            if (wp_doing_ajax() && check_ajax_referer('woo-retailcrm-loyalty-actions-nonce', '_ajax_nonce', false) !== 1) {
+                $this->accessLog('woo-retailcrm-loyalty-actions-nonce');
+                wp_die();
+            }
+
+            $code = filter_input(INPUT_POST, 'code', FILTER_SANITIZE_STRING);
+            $checkId = filter_input(INPUT_POST, 'checkId', FILTER_SANITIZE_STRING);
+            $isSuccessful = false;
+            $isInvalidCode = false;
+
+            if (!empty($code) && !empty($checkId)) {
+                $response = $this->loyalty->confirmSmsVerification($code, $checkId);
+                $isSuccessful = $response['isSuccessful'] ?? false;
+                $isInvalidCode = $response['isInvalidCode'] ?? false;
+            }
+
+            if (!$isSuccessful) {
+                WC_Retailcrm_Logger::error(
+                    __METHOD__,
+                    'Errors when confirming sms verification for loyalty program. Passed parameters: '
+                    . wp_json_encode(['checkId' => $checkId])
+                );
+
+                if ($isInvalidCode) {
+                    echo wp_json_encode(['error' => esc_html__('Incorrect SMS code', 'woo-retailcrm')]);
+                } else {
+                    echo wp_json_encode(['error' => esc_html__('Error when activating the loyalty program. Try again later', 'woo-retailcrm')]);
+                }
+            } else {
+                echo wp_json_encode(['isSuccessful' => true]);
             }
 
             wp_die();
