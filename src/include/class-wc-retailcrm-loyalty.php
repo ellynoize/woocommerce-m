@@ -174,6 +174,49 @@ if (!class_exists('WC_Retailcrm_Loyalty')) :
             return $this->loyaltyForm->getSmsVerificationForm($checkId);
         }
 
+        public function confirmSmsVerification(string $code, string $checkId): array
+        {
+            try {
+                $response = $this->apiClient->confirmSmsVerification(
+                    [
+                        'code' => $code,
+                        'checkId' => $checkId
+                    ]
+                );
+
+                if (!$response->isSuccessful()) {
+                    $errorString = trim((string) $response->getErrorString());
+                    $isInvalidCode = stripos($errorString, 'code') !== false;
+
+                    WC_Retailcrm_Logger::error(
+                        __METHOD__,
+                        'Error while confirming sms verification',
+                        ['response' => json_decode($response->getRawResponse(), true)]
+                    );
+
+                    return [
+                        'isSuccessful' => false,
+                        'isInvalidCode' => $isInvalidCode
+                    ];
+                }
+
+                $isVerified = $response->offsetExists('verification')
+                    && !empty($response['verification']['verifiedAt']);
+
+                return [
+                    'isSuccessful' => $isVerified,
+                    'isInvalidCode' => !$isVerified
+                ];
+            } catch (Throwable $exception) {
+                WC_Retailcrm_Logger::exception(__METHOD__, $exception);
+
+                return [
+                    'isSuccessful' => false,
+                    'isInvalidCode' => false
+                ];
+            }
+        }
+
         private function getDiscountLoyalty($cartItems, $site, $customerId)
         {
             $discount = 0;

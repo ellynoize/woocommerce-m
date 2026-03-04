@@ -85,6 +85,31 @@ jQuery(function() {
         event.preventDefault();
     });
 
+    jQuery(document).on("submit", '#loyaltyVerifySmsForm', function (event) {
+        var smsCode = jQuery('#loyaltySmsCode');
+        var checkId = jQuery('#loyaltyCheckId');
+
+        jQuery.ajax({
+            url: retailcrmLoyaltyUrl.url + 'admin-ajax.php?action=retailcrm_confirm_sms_customer_loyalty',
+            method: 'POST',
+            timeout: 0,
+            data: {ajax: 1, code: smsCode.val(), checkId: checkId.val(), _ajax_nonce: retailcrmNonce},
+            dataType: 'json'
+        })
+            .done(function (response) {
+                if (response.hasOwnProperty('error')) {
+                    jQuery('#loyaltyVerifySmsForm').append('<p style="color: red">'+ response.error + '</p>')
+
+                    event.preventDefault();
+                    return false;
+                } else {
+                    location.reload();
+                }
+            })
+
+        event.preventDefault();
+    });
+
     jQuery('.popup-open-loyalty').click(function() {
         if (jQuery(this).attr('id') === 'terms-popup') {
             jQuery('#popup-loyalty-text').html(retailcrmTermsLoyalty);

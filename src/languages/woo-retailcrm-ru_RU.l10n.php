@@ -248,6 +248,7 @@ return [
         'Error while registering in the loyalty program. Try again later' => 'Ошибка при регистрации в программе лояльности. Попробуйте позже',
         'The card is not linked' => 'Карта не привязана',
         'Error while retrieving data. Try again later' => 'Ошибка при получении данных. Попробуйте позже',
+        'Incorrect SMS code' => 'Неверный код из СМС',
         'Error when activating the loyalty program. Try again later' => 'Ошибка при активации программы лояльности. Попробуйте позже',
         'Enter the correct phone number' => 'Введите корректный номер телефона',
         'Close' => 'Закрыть',
