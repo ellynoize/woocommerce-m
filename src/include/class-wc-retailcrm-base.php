@@ -1034,12 +1034,9 @@ if (!class_exists('WC_Retailcrm_Base')) {
             $code = filter_input(INPUT_POST, 'code', FILTER_SANITIZE_STRING);
             $checkId = filter_input(INPUT_POST, 'checkId', FILTER_SANITIZE_STRING);
             $isSuccessful = false;
-            $isInvalidCode = false;
 
             if (!empty($code) && !empty($checkId)) {
-                $response = $this->loyalty->confirmSmsVerification($code, $checkId);
-                $isSuccessful = $response['isSuccessful'] ?? false;
-                $isInvalidCode = $response['isInvalidCode'] ?? false;
+                $isSuccessful = $this->loyalty->confirmSmsVerification($code, $checkId);
             }
 
             if (!$isSuccessful) {
@@ -1049,11 +1046,7 @@ if (!class_exists('WC_Retailcrm_Base')) {
                     . wp_json_encode(['checkId' => $checkId])
                 );
 
-                if ($isInvalidCode) {
-                    echo wp_json_encode(['error' => esc_html__('Incorrect SMS code', 'woo-retailcrm')]);
-                } else {
-                    echo wp_json_encode(['error' => esc_html__('Error when activating the loyalty program. Try again later', 'woo-retailcrm')]);
-                }
+                echo wp_json_encode(['error' => esc_html__('Incorrect SMS code or an error occurred', 'woo-retailcrm')]);
             } else {
                 echo wp_json_encode(['isSuccessful' => true]);
             }
