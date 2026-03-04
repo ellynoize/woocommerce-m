@@ -76,11 +76,7 @@ if (!class_exists('WC_Retailcrm_Loyalty')) :
                 if ($loyaltyAccount['active'] === true) {
                     $result['form'] = $this->loyaltyForm->getInfoLoyalty($loyaltyAccount);
                 } else {
-                    $loyaltyInfo = $this->apiClient->getLoyalty($loyaltyAccount['loyalty']['id'])['loyalty'];
-                    $needConfirmSmsRegistration = isset($loyaltyInfo['confirmSmsRegistration'])
-                        && true === $loyaltyInfo['confirmSmsRegistration'];
-
-                    $result['form'] = $this->loyaltyForm->getActivationForm($needConfirmSmsRegistration);
+                    $result['form'] = $this->loyaltyForm->getActivationForm();
 
                     $result['loyaltyId'] = $loyaltyAccount['id'];
                 }

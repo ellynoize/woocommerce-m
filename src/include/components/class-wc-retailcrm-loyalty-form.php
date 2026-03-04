@@ -53,7 +53,7 @@ if (!class_exists('WC_Retailcrm_Loyalty')) :
             );
         }
 
-        public function getActivationForm(bool $needConfirmSmsRegistration = false)
+        public function getActivationForm()
         {
             return sprintf('
                     <form id="loyaltyActivateForm" method="post">
