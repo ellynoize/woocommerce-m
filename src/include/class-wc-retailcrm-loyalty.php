@@ -77,8 +77,10 @@ if (!class_exists('WC_Retailcrm_Loyalty')) :
                     $result['form'] = $this->loyaltyForm->getInfoLoyalty($loyaltyAccount);
                 } else {
                     $loyaltyInfo = $this->apiClient->getLoyalty($loyaltyAccount['loyalty']['id'])['loyalty'];
+                    $needConfirmSmsRegistration = isset($loyaltyInfo['confirmSmsRegistration'])
+                        && true === $loyaltyInfo['confirmSmsRegistration'];
 
-                    $result['form'] = $this->loyaltyForm->getActivationForm($loyaltyInfo['confirmSmsRegistration']);
+                    $result['form'] = $this->loyaltyForm->getActivationForm($needConfirmSmsRegistration);
 
                     $result['loyaltyId'] = $loyaltyAccount['id'];
                 }
@@ -174,46 +176,26 @@ if (!class_exists('WC_Retailcrm_Loyalty')) :
             return $this->loyaltyForm->getSmsVerificationForm($checkId);
         }
 
-        public function confirmSmsVerification(string $code, string $checkId): array
+        public function confirmSmsVerification(string $code, string $checkId): bool
         {
             try {
-                $response = $this->apiClient->confirmSmsVerification(
-                    [
-                        'code' => $code,
-                        'checkId' => $checkId
-                    ]
-                );
+                $response = $this->apiClient->confirmSmsVerification(['code' => $code, 'checkId' => $checkId]);
 
                 if (!$response->isSuccessful()) {
-                    $errorString = trim((string) $response->getErrorString());
-                    $isInvalidCode = stripos($errorString, 'code') !== false;
-
                     WC_Retailcrm_Logger::error(
                         __METHOD__,
                         'Error while confirming sms verification',
                         ['response' => json_decode($response->getRawResponse(), true)]
                     );
 
-                    return [
-                        'isSuccessful' => false,
-                        'isInvalidCode' => $isInvalidCode
-                    ];
+                    return false;
                 }
 
-                $isVerified = $response->offsetExists('verification')
-                    && !empty($response['verification']['verifiedAt']);
-
-                return [
-                    'isSuccessful' => $isVerified,
-                    'isInvalidCode' => !$isVerified
-                ];
+                return true;
             } catch (Throwable $exception) {
                 WC_Retailcrm_Logger::exception(__METHOD__, $exception);
 
-                return [
-                    'isSuccessful' => false,
-                    'isInvalidCode' => false
-                ];
+                return false;
             }
         }
 

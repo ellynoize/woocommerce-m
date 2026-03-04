@@ -249,6 +249,7 @@ return [
         'The card is not linked' => 'Карта не привязана',
         'Error while retrieving data. Try again later' => 'Ошибка при получении данных. Попробуйте позже',
         'Incorrect SMS code' => 'Неверный код из СМС',
+        'Incorrect SMS code or an error occurred' => 'Неверный код из СМС или возникла ошибка',
         'Error when activating the loyalty program. Try again later' => 'Ошибка при активации программы лояльности. Попробуйте позже',
         'Enter the correct phone number' => 'Введите корректный номер телефона',
         'Close' => 'Закрыть',
