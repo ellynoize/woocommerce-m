@@ -71,10 +71,12 @@ jQuery(function() {
         })
             .done(function (response) {
                 if (response.hasOwnProperty('error')) {
-                    jQuery('#loyaltyRegisterForm').append('<p style="color: red">'+ response.error + '</p>')
+                    jQuery('#loyaltyActivateForm').append('<p style="color: red">'+ response.error + '</p>')
 
                     event.preventDefault();
                     return false;
+                } else if (response.needSmsVerification && response.smsForm) {
+                    jQuery('#loyaltyActivateForm').replaceWith(response.smsForm);
                 } else {
                     location.reload();
                 }

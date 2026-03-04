@@ -504,6 +504,12 @@ msgstr "Активировать участие в программе лояль
 msgid "Send"
 msgstr "Отправить"
 
+msgid "Confirm"
+msgstr "Подтвердить"
+
+msgid "SMS code"
+msgstr "Код из СМС"
+
 msgid "To register in the loyalty program, fill in the form:"
 msgstr "Для регистрации в программе лояльности заполните форму:"
 

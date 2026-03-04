@@ -76,7 +76,9 @@ if (!class_exists('WC_Retailcrm_Loyalty')) :
                 if ($loyaltyAccount['active'] === true) {
                     $result['form'] = $this->loyaltyForm->getInfoLoyalty($loyaltyAccount);
                 } else {
-                    $result['form'] = $this->loyaltyForm->getActivationForm();
+                    $loyaltyInfo = $this->apiClient->getLoyalty($loyaltyAccount['loyalty']['id'])['loyalty'];
+
+                    $result['form'] = $this->loyaltyForm->getActivationForm($loyaltyInfo['confirmSmsRegistration']);
 
                     $result['loyaltyId'] = $loyaltyAccount['id'];
                 }
@@ -130,7 +132,7 @@ if (!class_exists('WC_Retailcrm_Loyalty')) :
             }
         }
 
-        public function activateLoyaltyCustomer(int $loyaltyId)
+        public function activateLoyaltyCustomer(int $loyaltyId): array
         {
             try {
                 $response = $this->apiClient->activateLoyaltyAccount($loyaltyId);
@@ -143,12 +145,33 @@ if (!class_exists('WC_Retailcrm_Loyalty')) :
                     );
                 }
 
-                return $response->isSuccessful();
+                $checkId = null;
+
+                if (
+                    $response->isSuccessful()
+                    && $response->offsetExists('verification')
+                    && isset($response['verification']['checkId'])
+                ) {
+                    $checkId = (string) $response['verification']['checkId'];
+                }
+
+                return [
+                    'isSuccessful' => $response->isSuccessful(),
+                    'checkId' => $checkId
+                ];
             } catch (Throwable $exception) {
                 WC_Retailcrm_Logger::exception(__METHOD__, $exception);
 
-                return false;
+                return [
+                    'isSuccessful' => false,
+                    'checkId' => null
+                ];
             }
+        }
+
+        public function getSmsVerificationForm(string $checkId): string
+        {
+            return $this->loyaltyForm->getSmsVerificationForm($checkId);
         }
 
         private function getDiscountLoyalty($cartItems, $site, $customerId)

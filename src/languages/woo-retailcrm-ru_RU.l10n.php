@@ -238,6 +238,8 @@ return [
         '%1$s bonuses will expire %2$s' => '%1$s бонусов сгорят %2$s',
         '%1$s bonuses will active %2$s' => '%1$s бонусов ожидают активации %2$s',
         'Send' => 'Отправить',
+        'Confirm' => 'Подтвердить',
+        'SMS code' => 'Код из СМС',
         'To register in the loyalty program, fill in the form:' => 'Для регистрации в программе лояльности заполните форму:',
         ' I agree with ' => ' Я согласен с ',
         'loyalty program terms' => 'условиями программы лояльности',
