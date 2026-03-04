@@ -53,7 +53,7 @@ if (!class_exists('WC_Retailcrm_Loyalty')) :
             );
         }
 
-        public function getActivationForm()
+        public function getActivationForm(bool $needConfirmSmsRegistration = false)
         {
             return sprintf('
                     <form id="loyaltyActivateForm" method="post">
@@ -62,6 +62,21 @@ if (!class_exists('WC_Retailcrm_Loyalty')) :
                     </form>',
                 esc_html__('Activate participation in the loyalty program', 'woo-retailcrm'),
                 esc_html__('Send', 'woo-retailcrm')
+            );
+        }
+
+        public function getSmsVerificationForm(string $checkId)
+        {
+            return sprintf(
+                '
+                    <form id="loyaltyVerifySmsForm" method="post">
+                        <p><input type="text" name="smsCode" id="loyaltySmsCode" placeholder="%1$s"></p>
+                        <input type="hidden" name="checkId" id="loyaltyCheckId" value="%2$s">
+                        <input type="submit" value="%3$s">
+                    </form>',
+                esc_html__('SMS code', 'woo-retailcrm'),
+                esc_attr($checkId),
+                esc_html__('Confirm', 'woo-retailcrm')
             );
         }
 

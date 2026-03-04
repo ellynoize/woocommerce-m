@@ -994,9 +994,12 @@ if (!class_exists('WC_Retailcrm_Base')) {
 
             $loyaltyId = filter_input(INPUT_POST, 'loyaltyId', FILTER_SANITIZE_NUMBER_INT);
             $isSuccessful = false;
+            $checkId = null;
 
             if ($loyaltyId) {
-                $isSuccessful = $this->loyalty->activateLoyaltyCustomer($loyaltyId);
+                $response = $this->loyalty->activateLoyaltyCustomer($loyaltyId);
+                $isSuccessful = $response['isSuccessful'] ?? false;
+                $checkId = $response['checkId'] ?? null;
             }
 
             if (!$isSuccessful) {
@@ -1006,7 +1009,15 @@ if (!class_exists('WC_Retailcrm_Base')) {
                 );
                 echo wp_json_encode(['error' => esc_html__('Error when activating the loyalty program. Try again later', 'woo-retailcrm')]);
             } else {
-                echo wp_json_encode(['isSuccessful' => true]);
+                if (!empty($checkId)) {
+                    echo wp_json_encode([
+                        'isSuccessful' => true,
+                        'needSmsVerification' => true,
+                        'smsForm' => $this->loyalty->getSmsVerificationForm($checkId),
+                    ]);
+                } else {
+                    echo wp_json_encode(['isSuccessful' => true]);
+                }
             }
 
             wp_die();
