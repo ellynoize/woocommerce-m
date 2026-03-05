@@ -1,3 +1,6 @@
+## 2026-03-05 5.0.11
+* Sms confirm added
+
 ## 2026-01-21 5.0.10
 * Send customer's birthday to CRM
 
