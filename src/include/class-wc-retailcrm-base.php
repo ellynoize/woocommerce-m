@@ -1038,8 +1038,8 @@ if (!class_exists('WC_Retailcrm_Base')) {
                 wp_die();
             }
 
-            $code = filter_input(INPUT_POST, 'code', FILTER_SANITIZE_STRING);
-            $checkId = filter_input(INPUT_POST, 'checkId', FILTER_SANITIZE_STRING);
+            $code = isset($_POST['code']) ? sanitize_text_field(wp_unslash($_POST['code'])) : null;
+            $checkId = isset($_POST['checkId']) ? sanitize_text_field(wp_unslash($_POST['checkId'])) : null;
             $isSuccessful = false;
 
             if (null !== $code && null !== $checkId) {
