@@ -70,7 +70,7 @@ if (!class_exists('WC_Retailcrm_Loyalty')) :
             return sprintf(
                 '
                     <form id="loyaltyVerifySmsForm" method="post">
-                        <p><input type="text" name="smsCode" id="loyaltySmsCode" placeholder="%1$s"></p>
+                        <p><input type="text" name="smsCode" id="loyaltySmsCode" placeholder="%1$s" required></p>
                         <input type="hidden" name="checkId" id="loyaltyCheckId" value="%2$s">
                         <input type="submit" value="%3$s">
                     </form>',
